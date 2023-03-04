@@ -1,0 +1,6 @@
+before_filter	6576264292
+after_filter	6245650544
+read1_before_filter	3288206847
+read2_before_filter	3288057445
+read1_after_filter	3124130966
+read2_after_filter	3121519578

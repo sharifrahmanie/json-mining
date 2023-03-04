@@ -1,0 +1,23 @@
+#!/bin/bash 
+# @biomedical_informatics Edris Sharif Rahmani. March 4, 2023
+if [ "$1" == "-h" ]
+then
+	echo "Usage: json file.json"
+	exit
+fi
+grep -w '".*filter"' $1 | sed -e 's/^[ \t]*//' | sed -e 's/"//g' | \
+ sed -e 's/: {//g' > string.txt
+grep -w "total_bases" $1 |sed 's/"total_bases"://g' | sed 's/,//g' | \
+ sed -e 's/^[ \t]*//' > total.txt
+grep -o '^\s*"rate":\s*[0-9]\+\.[0-9]\+' $1 |sed 's/"rate": //g' | \
+ sed -e 's/^[ \t]*//' > rate.txt
+rate_number=$(cat string.txt | wc -l)
+rate=$(awk '{print $1}' rate.txt)
+for i in `seq $rate_number`; do echo $rate; done > rate.txt
+paste string.txt total.txt rate.txt > result_tmp.txt
+cat result_tmp.txt | \
+awk -F '\t' '{result = $2 - ($2 * $3); printf "%s\t%.0f\n", $1, result}' \
+> result.txt
+rm string.txt total.txt rate.txt result_tmp.txt
+cat result.txt
+
